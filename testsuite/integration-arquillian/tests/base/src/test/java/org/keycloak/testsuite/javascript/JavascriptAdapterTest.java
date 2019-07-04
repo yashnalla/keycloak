@@ -154,6 +154,17 @@ public class JavascriptAdapterTest extends AbstractJavascriptTest {
     }
 
     @Test
+    public void testSilentCheckSso() {
+        JSObjectBuilder checkSSO = defaultArguments().checkSSOOnLoad();
+        testExecutor.init(checkSSO, this::assertInitNotAuth)
+                .login(this::assertOnLoginPage)
+                .loginForm(testUser, this::assertOnTestAppUrl)
+                .init(checkSSO
+                        .add("silentCheckSsoRedirectUri", authServerContextRootPage + JAVASCRIPT_URL + "/silent-check-sso.html")
+                        , this::assertSuccessfullyLoggedIn);
+    }
+
+    @Test
     public void testRefreshToken() {
         testExecutor.init(defaultArguments(), this::assertInitNotAuth)
                 .refreshToken(9999, assertOutputContains("Failed to refresh token"))
